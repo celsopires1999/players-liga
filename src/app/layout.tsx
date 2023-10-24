@@ -22,7 +22,9 @@ export default function RootLayout({
       <body className={`${inter.className} min-w-[300px]`}>
         <ThemeProvider attribute="class" defaultTheme="system">
           <Header />
-          <main className="m-auto mt-[100px] max-w-7xl p-4">{children}</main>
+          <main className="relative top-20 m-auto  max-w-7xl p-4">
+            {children}
+          </main>
           <Toaster position="top-right" />
         </ThemeProvider>
       </body>

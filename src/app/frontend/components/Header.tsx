@@ -26,8 +26,9 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed left-0 top-0 z-50 mx-auto w-full border-b bg-inherit px-4 py-3 sm:flex sm:justify-between">
-      <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="fixed left-0 top-0 z-50 w-full border-b bg-inherit sm:flex sm:justify-between">
+      {/* <div className="flex h-16 w-full items-center justify-between px-4 lg:px-8"> */}
+      <div className="flex h-16 w-full items-center justify-between px-4">
         <div className="flex items-center">
           <Sheet>
             <SheetTrigger>
@@ -47,7 +48,7 @@ const Header = () => {
               </nav>
             </SheetContent>
           </Sheet>
-          <Link href="/" className="ml-4 lg:ml-0">
+          <Link href="/" className="ml-4 md:ml-0">
             <h1 className="text-xl font-bold">PLAYERS LIGA</h1>
           </Link>
         </div>

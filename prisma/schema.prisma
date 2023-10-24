@@ -11,25 +11,28 @@ datasource db {
 }
 
 model LigaModel {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  name      String        @unique
-  imageUrl  String
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  ligaId    String         @id @default(auto()) @map("_id") @db.ObjectId
+  name      String         @unique
+  imageUrl  String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  gameDays  GameDayModel[]
+  teams     TeamModel[]
   players   PlayerModel[]
 
   @@map("ligas")
 }
 
 model PlayerModel {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  playerId  String        @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  imageUrl  String
-  liga      LigaModel @relation(fields: [ligaId], references: [id], onDelete: Cascade)
-  ligaId    String    @db.ObjectId
+  imageUrl  String?
+  liga      LigaModel     @relation(fields: [ligaId], references: [ligaId], onDelete: Cascade)
+  ligaId    String        @db.ObjectId
   position  Position
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  actions   ActionModel[]
 
   @@unique([name, ligaId])
   @@map("players")
@@ -40,4 +43,69 @@ enum Position {
   Defender
   Midfielder
   Forward
+}
+
+model TeamModel {
+  teamId    String        @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  imageUrl  String?
+  liga      LigaModel     @relation(fields: [ligaId], references: [ligaId], onDelete: Cascade)
+  ligaId    String        @db.ObjectId
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  homes     GameModel[]   @relation("Homes")
+  aways     GameModel[]   @relation("Aways")
+  actions   ActionModel[]
+
+  @@unique([name, ligaId])
+  @@map("teams")
+}
+
+model GameDayModel {
+  gameDayId String      @id @default(auto()) @map("_id") @db.ObjectId
+  gameDay   DateTime
+  liga      LigaModel   @relation(fields: [ligaId], references: [ligaId], onDelete: Cascade)
+  ligaId    String      @db.ObjectId
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  games     GameModel[]
+
+  @@unique([gameDay, ligaId])
+  @@map("game-days")
+}
+
+model GameModel {
+  gameId     String        @id @default(auto()) @map("_id") @db.ObjectId
+  gameDay    GameDayModel  @relation(fields: [gameDayId], references: [gameDayId], onDelete: Cascade)
+  gameDayId  String        @db.ObjectId
+  gameNumber Int
+  home       TeamModel     @relation("Homes", fields: [homeId], references: [teamId], onDelete: Cascade)
+  homeId     String        @db.ObjectId
+  away       TeamModel     @relation("Aways", fields: [awayId], references: [teamId], onDelete: Cascade)
+  awayId     String        @db.ObjectId
+  homeGols   Int
+  awayGols   Int
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  actions    ActionModel[]
+
+  @@unique([gameDayId, gameNumber])
+  @@map("games")
+}
+
+model ActionModel {
+  actionId  String      @id @default(auto()) @map("_id") @db.ObjectId
+  game      GameModel   @relation(fields: [gameId], references: [gameId], onDelete: Cascade)
+  gameId    String      @db.ObjectId
+  team      TeamModel   @relation(fields: [teamId], references: [teamId], onDelete: Cascade)
+  teamId    String      @db.ObjectId
+  player    PlayerModel @relation(fields: [playerId], references: [playerId], onDelete: Cascade)
+  playerId  String      @db.ObjectId
+  gols      Int
+  assists   Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([gameId, teamId, playerId])
+  @@map("actions")
 }
