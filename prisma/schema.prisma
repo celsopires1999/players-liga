@@ -35,6 +35,7 @@ model PlayerModel {
   actions   ActionModel[]
 
   @@unique([name, ligaId])
+  @@index([ligaId])
   @@map("players")
 }
 
@@ -58,6 +59,7 @@ model TeamModel {
   actions   ActionModel[]
 
   @@unique([name, ligaId])
+  @@index([ligaId])
   @@map("teams")
 }
 
@@ -71,6 +73,7 @@ model GameDayModel {
   games     GameModel[]
 
   @@unique([gameDay, ligaId])
+  @@index([ligaId])
   @@map("game-days")
 }
 
@@ -90,6 +93,9 @@ model GameModel {
   actions    ActionModel[]
 
   @@unique([gameDayId, gameNumber])
+  @@index([gameDayId])
+  @@index([homeId])
+  @@index([awayId])
   @@map("games")
 }
 
@@ -107,5 +113,8 @@ model ActionModel {
   updatedAt DateTime    @updatedAt
 
   @@unique([gameId, teamId, playerId])
+  @@index([gameId])
+  @@index([teamId])
+  @@index([playerId])
   @@map("actions")
 }
